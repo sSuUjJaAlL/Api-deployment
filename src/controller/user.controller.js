@@ -29,9 +29,9 @@ async function getRefreshToken(req,res) {
     try {
         const refreshtoken = req.params.refreshToken;
         
-        const s = await refreshtokenService(refreshtoken);
+        const apiresponse = await refreshtokenService(refreshtoken);
         return res.status(201).json({
-            s
+            apiresponse
         })
     } catch (error) {
         console.log(error)
