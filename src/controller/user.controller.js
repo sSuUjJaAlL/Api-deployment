@@ -1,5 +1,5 @@
 import User from "../database/schema/user.schema.js"
-import { loginService, signUpservice } from "../service/user.service.js"
+import { loginService, refreshtokenService, signUpservice } from "../service/user.service.js"
 
 async function signupController (req,res) {
     try{
@@ -25,6 +25,18 @@ async function loginController (req,res) {
         console.log(err)
     }
 }
+async function getRefreshToken(req,res) {
+    try {
+        const refreshtoken = req.params.refreshToken;
+        
+        const s = await refreshtokenService(refreshtoken);
+        return res.status(201).json({
+            s
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 async function getUserProfile (req,res) {
     try{
@@ -42,5 +54,6 @@ async function getUserProfile (req,res) {
 export {
     signupController,
     loginController,
-    getUserProfile
+    getUserProfile,
+    getRefreshToken
 }

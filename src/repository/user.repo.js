@@ -17,8 +17,21 @@ async function saveData(content){
     return savedResult
 }
 
+
+
+
+
+
+
+async function findUser(s) {
+    const ss = await User.findOne({ _id: s });
+    return ss;
+    
+}
+
 export {
     getEmail,
     getUsername,
-    saveData
+    saveData,
+    findUser
 }

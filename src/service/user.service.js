@@ -1,6 +1,7 @@
-import { getEmail,getUsername, saveData } from "../repository/user.repo.js"
+import { findUser, getEmail,getUsername, saveData } from "../repository/user.repo.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { findAl } from "../repository/book.repo.js"
 
 async function signUpservice(content){
 
@@ -53,23 +54,47 @@ async function loginService(content){
     }
 
     const secretkey = 'sujal'
-    
-    if('password' in emailExists){
-        delete emailExists['password']
-    }
 
     const accessToken = jwt.sign(payload,secretkey,{issuer : 'sujal adhikari',expiresIn : '1h'})
+    const refreshToken = jwt.sign(payload,secretkey,{issuer : 'sujal adhikari',expiresIn : '1d'})
     return {
-        accessToken
+        accessToken,refreshToken
     }
 }
+    
+    
+
 
 
 async function getUserProfile(){
 
 }
 
+
+
+
+
+
+
+
+
+async function refreshtokenService(s) {
+   
+   const secretKey="sujal"
+    const decodedPayload = jwt.verify(s, secretKey);
+    const userId = decodedPayload.userId;
+    const shubham = await findUser(userId);
+    
+    const payload = {
+      userId: shubham._id,
+      username: shubham.username,
+      useremail: shubham.email,
+    };
+    const accessToken = jwt.sign(payload, secretKey,{issuer : 'sujal adhikari',expiresIn : '1h'})
+    return { accessToken };
+}
 export {
     signUpservice,
-    loginService
+    loginService,
+    refreshtokenService
 }
