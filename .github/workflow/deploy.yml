@@ -1,0 +1,44 @@
+
+
+
+
+name: Deploy Node.js to VMware VM
+
+on:
+  push:
+    branches:
+      - main  # Runs on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4  # Latest version of checkout action
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VMWARE_HOST }}  # Server IP or domain
+          username: ${{ secrets.VMWARE_USER }}  # SSH user
+          key: ${{ secrets.VMWARE_SSH_KEY }}  # Private SSH key
+          script: |
+            cd /var/www/html/your_project  # Change to your project directory
+            
+            echo "Pulling latest changes..."
+            git pull origin main  
+
+            echo "Installing Node.js dependencies..."
+            npm install --omit=dev  # Install dependencies (without devDependencies)
+
+            echo "Building the project..."
+            npm run build  # Adjust this if your project requires a build step
+
+            echo "Restarting the Node.js application..."
+            pm2 restart your_app_name || pm2 start npm --name "your_app_name" -- start
+
+            echo "Deployment completed successfully!"
+
+
+
